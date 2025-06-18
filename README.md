@@ -13,19 +13,19 @@ Setup Ninja is a work-in-progress project designed to automate the installation 
 1. Ensure Lua is installed on your system.
 2. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/setup-ninja.git
+   git clone https://github.com/lazybobcat/setup-ninja.git
    ```
 3. Navigate to the project directory:
    ```bash
    cd setup-ninja
-   chmod +x setup-ninja
-   ./setup-ninja
+   sudo make install
    ```
+   This will deploy the lua libs in `/usr/local/share` and install the executable in `/usr/local/bin`.
 
 ## Usage
 
 1. Write your lua packages files, see `packages.lua` file.
-2. Run `./setup-ninja --config <package_file>`. You can add `--dry-run` to check what will be done.
+2. Run `setup-ninja --config <package_file>`. You can add `--dry-run` to check what will be done.
 
 ## Contributing
 

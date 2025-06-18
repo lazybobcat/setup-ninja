@@ -1,85 +1,12 @@
-#!/usr/bin/env lua
+#!/bin/sh
 
-local sys = require("libs.system")
-local pm = require("libs.package-manager")
-local config = require("libs.config")
+# Check if the "lua" executable is available
+if ! command -v lua >/dev/null 2>&1; then
+    echo "Error: 'lua' is not installed. Please install Lua to proceed."
+    exit 1
+fi
 
-local function parse_arguments(args)
-  local i = 1
-  while i <= #args do
-    local arg = args[i]
-    if arg == "--dry-run" then
-      config.dry_run = true
-    elseif arg == "--config" then
-      i = i + 1
-      if i <= #args then
-        config.config_file = args[i]
-      else
-        error("--config requires a filename")
-      end
-    elseif arg == "--help" or arg == "-h" then
-      print("Usage: lua install.lua [--dry-run] [--config CONFIG_FILE]")
-      print("")
-      print("Options:")
-      print("  --dry-run          Show what would be installed without actually installing")
-      print("  --config FILE      Use specified config file (default: packages.lua)")
-      print("  --help, -h         Show this help message")
-      os.exit(0)
-    else
-      error("Unknown option: " .. arg .. "\nUse --help for usage information")
-    end
-    i = i + 1
-  end
-end
+# Run the Lua script and pass all arguments to it
+cd /usr/local/share/setup-ninja
+lua setup-ninja.lua "$@"
 
-local function confirm_installation()
-  io.write("Continue? (y/N): ")
-  local response = io.read()
-  return response and (response:lower() == "y" or response:lower() == "yes")
-end
-
--- Main execution
-local function main()
-  local useless_logo = "\
-███████╗███████╗████████╗██╗   ██╗██████╗     ███╗   ██╗██╗███╗   ██╗     ██╗ █████╗ \
-██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗    ████╗  ██║██║████╗  ██║     ██║██╔══██╗\
-███████╗█████╗     ██║   ██║   ██║██████╔╝    ██╔██╗ ██║██║██╔██╗ ██║     ██║███████║\
-╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝     ██║╚██╗██║██║██║╚██╗██║██   ██║██╔══██║\
-███████║███████╗   ██║   ╚██████╔╝██║         ██║ ╚████║██║██║ ╚████║╚█████╔╝██║  ██║\
-╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝         ╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚════╝ ╚═╝  ╚═╝\
-"
-  print(useless_logo)
-
-  -- Get the distro and greet the user
-  local distro = sys.detect_distro()
-  sys.print_distro_message(distro)
-  if nil == distro then
-    print("Error: Unknown or unsupported distribution!")
-    print("Supported distributions: Arch Linux, Debian, Ubuntu")
-    os.exit(1)
-  end
-
-  -- Parse command line arguments
-  local success, err = pcall(parse_arguments, arg)
-  if not success then
-    print("Error: " .. err)
-    os.exit(1)
-  end
-
-  print("Config file: " .. config.config_file)
-
-  print("")
-  if not confirm_installation() then
-    print("Aborted.")
-    os.exit(0)
-  end
-
-  success, err = pcall(pm.install_packages, distro)
-  if not success then
-    print("Error: " .. err)
-    os.exit(1)
-  end
-end
-
-
-main()
