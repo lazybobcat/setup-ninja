@@ -1,5 +1,7 @@
 #!/usr/bin/env lua
 
+local version = "1.0.0"
+
 local sys = require("libs.system")
 local pm = require("libs.package-manager")
 local config = require("libs.config")
@@ -24,6 +26,10 @@ local function parse_arguments(args)
       print("  --dry-run          Show what would be installed without actually installing")
       print("  --config FILE      Use specified config file (default: packages.lua)")
       print("  --help, -h         Show this help message")
+      print("  --version, -v      Show the script version")
+      os.exit(0)
+    elseif arg == "--version" or arg == "-v" then -- Handle version option
+      print("Setup Ninja version " .. version)
       os.exit(0)
     else
       error("Unknown option: " .. arg .. "\nUse --help for usage information")
@@ -40,19 +46,8 @@ end
 
 -- Main execution
 local function main()
-  local useless_logo = "\
-███████╗███████╗████████╗██╗   ██╗██████╗     ███╗   ██╗██╗███╗   ██╗     ██╗ █████╗ \
-██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗    ████╗  ██║██║████╗  ██║     ██║██╔══██╗\
-███████╗█████╗     ██║   ██║   ██║██████╔╝    ██╔██╗ ██║██║██╔██╗ ██║     ██║███████║\
-╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝     ██║╚██╗██║██║██║╚██╗██║██   ██║██╔══██║\
-███████║███████╗   ██║   ╚██████╔╝██║         ██║ ╚████║██║██║ ╚████║╚█████╔╝██║  ██║\
-╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝         ╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚════╝ ╚═╝  ╚═╝\
-"
-  print(useless_logo)
-
   -- Get the distro and greet the user
   local distro = sys.detect_distro()
-  sys.print_distro_message(distro)
   if nil == distro then
     print("Error: Unknown or unsupported distribution!")
     print("Supported distributions: Arch Linux, Debian, Ubuntu")
@@ -65,6 +60,17 @@ local function main()
     print("Error: " .. err)
     os.exit(1)
   end
+
+  local useless_logo = "\
+███████╗███████╗████████╗██╗   ██╗██████╗     ███╗   ██╗██╗███╗   ██╗     ██╗ █████╗ \
+██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗    ████╗  ██║██║████╗  ██║     ██║██╔══██╗\
+███████╗█████╗     ██║   ██║   ██║██████╔╝    ██╔██╗ ██║██║██╔██╗ ██║     ██║███████║\
+╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝     ██║╚██╗██║██║██║╚██╗██║██   ██║██╔══██║\
+███████║███████╗   ██║   ╚██████╔╝██║         ██║ ╚████║██║██║ ╚████║╚█████╔╝██║  ██║\
+╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝         ╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚════╝ ╚═╝  ╚═╝\
+"
+  print(useless_logo)
+  sys.print_distro_message(distro)
 
   print("Config file: " .. config.config_file)
 
