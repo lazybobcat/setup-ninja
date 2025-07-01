@@ -4,7 +4,7 @@
 --- @field dry_run boolean: Whether to perform a dry run without making changes (default: false).
 local config = {
   config_file = "packages.lua",
-  dry_run = true,
+  dry_run = false,
 }
 
 return config;

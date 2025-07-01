@@ -26,7 +26,7 @@ M.execute_command = function(command)
     return true
   else
     local success = os.execute(command)
-    return success == 0
+    return success or false
   end
 end
 
