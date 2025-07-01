@@ -1,6 +1,6 @@
 #!/usr/bin/env lua
 
-local version = "1.0.0"
+local version = "1.0.1"
 
 local sys = require("libs.system")
 local pm = require("libs.package-manager")
@@ -15,13 +15,17 @@ local function parse_arguments(args)
     elseif arg == "--config" then
       i = i + 1
       if i <= #args then
-        config.config_file = args[i]
+        local cwd = io.popen("pwd"):read("*l")       -- Get current working directory
+        if args[i]:sub(1, 1) == "/" or args[i]:sub(1, 2) == "~/" then
+          config.config_file = args[i]               -- Use the absolute path directly
+        else
+          config.config_file = cwd .. "/" .. args[i] -- Prepend cwd to config file path
+        end
       else
         error("--config requires a filename")
       end
     elseif arg == "--help" or arg == "-h" then
-      print("Usage: lua install.lua [--dry-run] [--config CONFIG_FILE]")
-      print("")
+      print("Usage: setup-ninja [--dry-run] [--config CONFIG_FILE]")
       print("Options:")
       print("  --dry-run          Show what would be installed without actually installing")
       print("  --config FILE      Use specified config file (default: packages.lua)")

@@ -7,6 +7,4 @@ if ! command -v lua >/dev/null 2>&1; then
 fi
 
 # Run the Lua script and pass all arguments to it
-cd /usr/local/share/setup-ninja
-lua setup-ninja.lua "$@"
-
+LUA_PATH=/usr/local/share/setup-ninja/?.lua lua /usr/local/share/setup-ninja/setup-ninja.lua "$@"
